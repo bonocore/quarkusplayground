@@ -6,75 +6,63 @@ import java.util.List;
 import java.util.Random;
 
 import javax.enterprise.context.ApplicationScoped;
+
+import org.apache.commons.lang3.RandomUtils;
+import org.eclipse.microprofile.opentracing.Traced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import it.redhat.account.model.Transaction;
-import it.redhat.account.model.TransactionList;
 
 @ApplicationScoped
+@Traced
 public class TransactionService {
 
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    Random randomGenerator = new Random();
     
-
-	public TransactionList listLegacy(String accountId) {
-        log.info("in service in thread: " + Thread.currentThread().getName());
-        TransactionList toRet = new TransactionList();
-            
-        try {
-            Thread.sleep(2000);
-           
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        int size= randomGenerator.nextInt(10);
-        for(int i=0;i<size;i++)
-        {
-            toRet.getTransactions().add(Transaction.generateRandomTransaction(accountId));
-        }
+	public List<Transaction>  listLegacy(String accountId) {
+        log.info("start list legacy");
+        
+        delay(3500,5500);
+        List<Transaction> toRet = populateRandomTransactionList(accountId);
+        log.info("end list legacy");
         return toRet;
 	}
 
-    public TransactionList listCreditCard(String accountId) {
-        log.info("in service in thread: " + Thread.currentThread().getName());
-        TransactionList toRet = new TransactionList();
-            
+    public List<Transaction>  listCreditCard(String accountId) {
+        log.info("start list creditCard");
+        
+        delay(3000,4500);
+        List<Transaction> toRet = populateRandomTransactionList(accountId);
+        log.info("end list creditCard");
+        return toRet;
+	}
+  
+    public List<Transaction>  listInstant(String accountId) {
+        log.info("start list instant");
+        
+        delay(500,2500);
+        List<Transaction> toRet = populateRandomTransactionList(accountId);
+        log.info("end list instant");
+        return toRet;
+	}
+    private void delay(long min, long max) {
+        
         try {
-            Thread.sleep(2000);
-           
+            Thread.sleep(RandomUtils.nextLong(min,max));
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        int size= randomGenerator.nextInt(10);
-        for(int i=0;i<size;i++)
-        {
-            toRet.getTransactions().add(Transaction.generateRandomTransaction(accountId));
+    }
+
+    private  List<Transaction> populateRandomTransactionList(String accountId) {
+        List<Transaction> toRet = new ArrayList<Transaction>();
+        int size = RandomUtils.nextInt(3,20);
+        for (int i = 0; i < size; i++) {
+            toRet.add(Transaction.generateRandomTransaction(accountId));
         }
         return toRet;
-	}
-
-    public TransactionList listInstant(String accountId) {
-        log.info("in service in thread: " + Thread.currentThread().getName());
-        TransactionList toRet = new TransactionList();
-            
-        try {
-            Thread.sleep(1000);
-           
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        int size= randomGenerator.nextInt(10);
-        for(int i=0;i<size;i++)
-        {
-            toRet.getTransactions().add(Transaction.generateRandomTransaction(accountId));
-        }
-        return toRet;
-	}
-
-
-
-
+    }
 }

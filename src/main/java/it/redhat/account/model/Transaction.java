@@ -7,6 +7,8 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.apache.commons.lang3.RandomUtils;
+
 public class Transaction{
 
     private String accountId = null;
@@ -113,17 +115,16 @@ public class Transaction{
       
 public static Transaction generateRandomTransaction(String accountId)
 {
-    Random randomGenerator = new Random();
     String[] status = {"BOOKED", "CANCELLED", "PENDING"};
     Date end = new Date();
     Date start = new Date( (end.getTime() - (1000*60*60*24*365) ) );
-    Date randomDate = new Date(ThreadLocalRandom.current().nextLong(start.getTime(), end.getTime()));
+    Date randomDate = new Date(RandomUtils.nextLong(start.getTime(), end.getTime()));
     
     return new Transaction(
         accountId, 
         UUID.randomUUID().toString(), 
-        (randomGenerator.nextInt(500) + randomGenerator.nextFloat() )+" EUR", 
-        status[randomGenerator.nextInt(status.length)],
+        (RandomUtils.nextFloat(0.10f, 2500f))+" EUR", 
+        status[RandomUtils.nextInt(0,status.length)],
         df.get().format(randomDate));
 }
 

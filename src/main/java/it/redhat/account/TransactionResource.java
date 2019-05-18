@@ -1,5 +1,7 @@
 package it.redhat.account;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -9,7 +11,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import it.redhat.account.model.TransactionList;
+
+import io.opentracing.Tracer;
+import it.redhat.account.model.*;
 
 @Path("/transaction")
 public class TransactionResource {
@@ -19,28 +23,26 @@ public class TransactionResource {
     @Inject
     TransactionService service;
 
+    @Inject
+    Tracer configuredTracer;
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/list/{accountId}")
-    public  TransactionList list(@PathParam("accountId") String accountId) {
+    public  List<Transaction> list(@PathParam("accountId") String accountId) {
         
-        TransactionList toRet=new TransactionList();
-        long beforeMillis = System.currentTimeMillis();
+        configuredTracer.activeSpan().setTag("accountId", accountId);
 
-        log.info("before listInstant in thread: " + Thread.currentThread().getName());
-        toRet.getTransactions().addAll(service.listInstant(accountId).getTransactions());
-        log.info("after listInstant in thread: " + Thread.currentThread().getName());
-
-        log.info("before listLegacy in thread: " + Thread.currentThread().getName());
-        toRet.getTransactions().addAll(service.listLegacy(accountId).getTransactions());
-        log.info("after listLegacy in thread: " + Thread.currentThread().getName());
+        List<Transaction> toRet=new ArrayList<Transaction>();
+     
+       
+        toRet.addAll(service.listInstant(accountId));
+       
+        toRet.addAll(service.listLegacy(accountId));
         
-        log.info("before listCreditCard in thread: " + Thread.currentThread().getName());
-        toRet.getTransactions().addAll(service.listCreditCard(accountId).getTransactions());
-        log.info("after listCreditCard in thread: " + Thread.currentThread().getName());
+        toRet.addAll(service.listCreditCard(accountId));
         
-        toRet.setElapsed(System.currentTimeMillis()-beforeMillis);
-
+      
         return toRet;
     }
 

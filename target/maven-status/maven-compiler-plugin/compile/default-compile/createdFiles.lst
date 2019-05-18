@@ -1,5 +1,6 @@
 it/redhat/quickstart/GreetingResource.class
 it/redhat/account/TransactionAsyncResource.class
+it/redhat/account/model/Transaction$1.class
 it/redhat/account/model/Transaction.class
 it/redhat/account/TransactionResource.class
 it/redhat/account/TransactionService.class
