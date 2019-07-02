@@ -24,7 +24,7 @@ public class TransactionService {
 	public List<Transaction>  listLegacy(String accountId) {
         log.info("start list legacy");
         
-        delay(3500,5500);
+        delay(500,2500);
         List<Transaction> toRet = populateRandomTransactionList(accountId);
         log.info("end list legacy");
         return toRet;
@@ -33,7 +33,7 @@ public class TransactionService {
     public List<Transaction>  listCreditCard(String accountId) {
         log.info("start list creditCard");
         
-        delay(3000,4500);
+        delay(500,1500);
         List<Transaction> toRet = populateRandomTransactionList(accountId);
         log.info("end list creditCard");
         return toRet;
@@ -42,7 +42,7 @@ public class TransactionService {
     public List<Transaction>  listInstant(String accountId) {
         log.info("start list instant");
         
-        delay(500,2500);
+        delay(300,2000);
         List<Transaction> toRet = populateRandomTransactionList(accountId);
         log.info("end list instant");
         return toRet;

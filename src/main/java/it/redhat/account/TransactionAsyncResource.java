@@ -59,7 +59,7 @@ public class TransactionAsyncResource {
         CompletionStage<List<Transaction>> combinedDataCompletionStage = 
         CompletableFuture.allOf(
             resultInstant, resultLegacy, resultCreditCard)
-            .thenApply(resultCombine -> combine(
+            .thenApply( Void -> combine(
                 resultInstant.join(), 
                 resultLegacy.join(),
                 resultCreditCard.join()));

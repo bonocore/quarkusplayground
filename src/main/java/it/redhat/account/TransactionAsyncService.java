@@ -33,7 +33,7 @@ public class TransactionAsyncService {
         Span span = extractSpan(textMapTransport,"listInstant");
 
         log.info("start list instant");
-        delay(500,2000);
+        delay(500,1000);
         List<Transaction> toRet = populateRandomTransactionList(accountId);
        
         log.info("end list instant");
@@ -50,7 +50,7 @@ public class TransactionAsyncService {
 
         log.info("start list legacy");
 
-        delay(2500,4000);
+        delay(300,2000);
         List<Transaction> toRet = populateRandomTransactionList(accountId);
         log.info("end list legacy");
         span.finish();
@@ -65,7 +65,7 @@ public class TransactionAsyncService {
 
         log.info("start list creditCard");
         
-        delay(3000,5000);
+        delay(300,1500);
         List<Transaction> toRet = populateRandomTransactionList(accountId);
         log.info("end list creditCard");
 
