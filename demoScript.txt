@@ -1,0 +1,50 @@
+---TOOLING
+mvn io.quarkus:quarkus-maven-plugin:1.10.5.Final:create \
+    -DprojectGroupId=it.rh \
+    -DprojectArtifactId=code-garden \
+    -DclassName="it.rh.quickstart.GreetingResource" \
+    -Dpath="/hello"
+
+./mvnw compile quarkus:dev:
+
+watch curl -s 127.0.0.1:8080/hello
+
+mvn clean package -Dquarkus.package.uber-jar=true
+
+./mvnw package -Pnative
+
+---- CDI and tracing
+
+Inject greetingService (add @Traced)
+
+./mvnw quarkus:add-extension -Dextensions="smallrye-opentracing"
+
+quarkus.jaeger.service-name=myservice
+quarkus.jaeger.sampler-type=const
+quarkus.jaeger.sampler-param=1
+quarkus.log.console.format=%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n
+
+docker run -e COLLECTOR_ZIPKIN_HTTP_PORT=9411 -p 5775:5775/udp -p 6831:6831/udp -p 6832:6832/udp -p 5778:5778 -p 16686:16686 -p 14268:14268 -p 9411:9411 jaegertracing/all-in-one:latest
+
+http://localhost:16686/search
+
+---- panache
+
+./mvnw quarkus:add-extension -Dextensions=jdbc-h2
+./mvnw quarkus:add-extension -Dextensions=quarkus-hibernate-orm-panache
+./mvnw quarkus:add-extension -Dextensions=resteasy-jackson
+
+Add model/Transaction.java, TransactionResource.java e TransactionUtil.java
+
+Add commons dep:
+
+  <dependency>
+       <groupId>org.apache.commons</groupId>
+       <artifactId>commons-lang3</artifactId>
+       <version>3.9</version>
+   </dependency>
+
+
+http://127.0.0.1:8080/tx
+
+http://127.0.0.1:8080/tx/cc
